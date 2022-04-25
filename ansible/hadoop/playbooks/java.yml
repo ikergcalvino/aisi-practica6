@@ -1,0 +1,7 @@
+---
+- hosts:
+  become: yes
+
+  tasks:
+    - name: Install JDK 11
+      package:

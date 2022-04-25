@@ -1,0 +1,25 @@
+# Hostname of the master and worker nodes
+master_hostname: xxx-aisi2122-master
+worker1_hostname: xxx-aisi2122-worker-1
+worker2_hostname: xxx-aisi2122-worker-2
+
+# The directory into which Hadoop will stored its data
+hadoop_data_dir: xxx-aisi2122-hadoop-data
+
+# The directory into which Hadoop will be downloaded
+download_dir: /tmp
+
+# The directory into which Hadoop will be installed on the master node
+hadoop_dir: /share/nfs/hadoop
+
+# Hadoop version
+hadoop_version: 3.3.2
+
+# URL for downloading Hadoop distribution
+hadoop_url: "https://ftp.cixug.es/apache/hadoop/common/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz"
+
+# Hadoop configuration directory
+hadoop_conf_dir: "{{ hadoop_dir }}/hadoop-{{ hadoop_version }}/etc/hadoop"
+
+# JAVA_HOME
+java_home: /usr/lib/jvm/java-1.11.0-openjdk-amd64

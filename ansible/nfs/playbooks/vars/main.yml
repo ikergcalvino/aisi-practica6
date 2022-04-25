@@ -1,0 +1,8 @@
+# Hostname of the NFS server
+nfs_server: xxx-aisi2122-master
+
+# Cluster network
+cluster_network: 10.10.1.0/24
+
+# NFS exported directory
+nfs_dir: /share/nfs

@@ -1,0 +1,12 @@
+---
+- hosts: cluster
+  become: yes
+
+- name: NFS common config
+  import_playbook: playbooks/nfs-common.yml
+
+- name: Setup NFS server
+  import_playbook: playbooks/nfs-server.yml
+
+- name: Setup NFS clients
+  import_playbook: playbooks/nfs-client.yml

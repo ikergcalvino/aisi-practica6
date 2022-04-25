@@ -1,0 +1,12 @@
+---
+- hosts: cluster
+  become: yes
+        
+- name: Java installation
+  import_playbook: playbooks/java.yml
+
+- name: Create user and group for Hadoop
+  import_playbook: playbooks/hadoop-user.yml
+
+- name: Hadoop installation and setup
+  import_playbook: playbooks/hadoop.yml

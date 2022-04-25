@@ -1,0 +1,46 @@
+--- 
+- hosts:
+  become: yes
+
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: Add group "hadoop"
+      group:
+      
+    - name: Add user "hadoop"
+      user:
+      
+    - name: Add env vars to .profile
+      blockinfile:
+        dest: /home/hadoop/.profile
+        marker: "# {mark} Added env vars"
+        block: |
+          export HADOOP_HOME={{ hadoop_dir }}/hadoop-{{ hadoop_version }}
+          export HADOOP_MAPRED_HOME=$HADOOP_HOME
+          export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+          export JAVA_HOME={{ java_home }}
+        backup: yes
+
+    - name: Copy SSH key
+      copy:
+        src: /home/hadoop/.ssh/id_rsa.pub
+        dest: /tmp/id_rsa.pub
+        remote_src: yes
+
+    - name: Set authorized key for hadoop user
+      authorized_key:
+        user: hadoop
+        state: present
+        key: "{{ item }}"
+      with_file:
+        - /tmp/id_rsa.pub
+
+    - name: Remove SSH keys
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/id_rsa
+        - /tmp/id_rsa.pub

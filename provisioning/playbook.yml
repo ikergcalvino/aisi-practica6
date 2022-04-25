@@ -1,0 +1,21 @@
+---
+- hosts: all
+  become: yes
+
+  vars:
+    list_of_packages: 
+      - ntp
+      - vim
+      - nano
+      - sshpass
+      - unzip
+      - python3-apt
+      - dnsutils
+      - dos2unix
+      - whois
+
+  tasks:
+    - name: Install basic software
+      package:
+        name: "{{ list_of_packages }}"
+        state: latest

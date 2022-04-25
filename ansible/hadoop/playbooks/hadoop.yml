@@ -1,0 +1,36 @@
+--- 
+- hosts:
+  become: yes
+
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: Create dir for Hadoop on NFS share
+      file:
+        path: "{{ hadoop_dir }}"
+        state: directory
+        owner: hadoop
+        group: hadoop
+
+    - name: Download Hadoop package
+      get_url:
+      
+    - name: Untar Hadoop package
+      unarchive:
+      
+    - name: Copy Hadoop configuration using loop
+      template:
+      loop:
+        - core-site.xml
+        - hdfs-site.xml
+        - mapred-site.xml
+        - yarn-site.xml
+        - workers
+
+    - name: Add JAVA_HOME variable to hadoop-env.sh
+      lineinfile:
+        path: "{{ hadoop_conf_dir }}/hadoop-env.sh"
+        line: "export JAVA_HOME={{ java_home }}"
+        state: present
+        
