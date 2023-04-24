@@ -1,5 +1,5 @@
 --- 
-- hosts:
+- hosts: xxx
   become: yes
 
   vars_files:
@@ -15,12 +15,28 @@
 
     - name: Download Hadoop package
       get_url:
-      
+        url: 
+        dest: "xxx/hadoop.tar.gz"
+        owner:
+        group:
+        force: false
+        checksum: md5:ae2caf4e19e215a50f13aa0b865c5079
+
     - name: Untar Hadoop package
       unarchive:
-      
+        src:
+        dest:
+        creates: "{{ hadoop_dir }}/hadoop-{{ hadoop_version }}"
+        owner:
+        group:
+        mode: "0755"
+
     - name: Copy Hadoop configuration using loop
       template:
+        src:
+        dest:
+        owner:
+        group:
       loop:
         - core-site.xml
         - hdfs-site.xml
@@ -28,9 +44,21 @@
         - yarn-site.xml
         - workers
 
-    - name: Add JAVA_HOME variable to hadoop-env.sh
-      lineinfile:
-        path: "{{ hadoop_conf_dir }}/hadoop-env.sh"
-        line: "export JAVA_HOME={{ java_home }}"
-        state: present
-        
+    - name: Add env variables to hadoop-env.sh
+      blockinfile:
+        dest: "{{ hadoop_conf_dir }}/hadoop-env.sh"
+        block: |
+          export HDFS_NAMENODE_OPTS="-Xmx512m $HDFS_NAMENODE_OPTS"
+          export HDFS_SECONDARYNAMENODE_OPTS="-Xmx512m $HDFS_SECONDARYNAMENODE_OPTS"
+          export HDFS_DATANODE_OPTS="-Xmx512m $HDFS_DATANODE_OPTS"
+          export JAVA_HOME={{ java_home }}
+        backup: yes
+
+    - name: Add env variables to yarn-env.sh
+      blockinfile:
+        dest: "{{ hadoop_conf_dir }}/yarn-env.sh"
+        block: |
+          export YARN_RESOURCEMANAGER_OPTS="-Xmx512m $YARN_RESOURCEMANAGER_OPTS"
+          export YARN_NODEMANAGER_OPTS="-Xmx512m $YARN_NODEMANAGER_OPTS"
+        backup: yes
+

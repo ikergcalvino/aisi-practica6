@@ -15,4 +15,12 @@
     <name>dfs.datanode.data.dir</name>
     <value>file:///data/disk0/{{ hadoop_data_dir }}/datanode,file:///data/disk1/{{ hadoop_data_dir }}/datanode</value>
   </property>
+  <property>
+    <name>dfs.namenode.heartbeat.recheck-interval</name>
+    <value>20000</value>
+  </property>
+  <property>
+    <name>dfs.namenode.stale.datanode.interval</name>
+    <value>10000</value>
+  </property>
 </configuration>

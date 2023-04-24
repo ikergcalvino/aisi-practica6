@@ -1,5 +1,5 @@
 --- 
-- hosts:
+- hosts: xxx
   become: yes
 
   vars_files:
@@ -7,18 +7,29 @@
 
   tasks:
     - name: Add group "hadoop"
-      group:
-      
+      group: name=hadoop
+
     - name: Add user "hadoop"
       user:
-      
+        name: 
+        group: 
+        home:
+        createhome:
+        password:
+        shell:
+        generate_ssh_key:
+        ssh_key_bits:
+        ssh_key_type:
+        force: yes
+
     - name: Add env vars to .profile
       blockinfile:
         dest: /home/hadoop/.profile
-        marker: "# {mark} Added env vars"
+        marker: "# {mark} Added env vars for Hadoop"
         block: |
           export HADOOP_HOME={{ hadoop_dir }}/hadoop-{{ hadoop_version }}
           export HADOOP_MAPRED_HOME=$HADOOP_HOME
+          export HADOOP_CONF_DIR={{ hadoop_conf_dir }}
           export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
           export JAVA_HOME={{ java_home }}
         backup: yes

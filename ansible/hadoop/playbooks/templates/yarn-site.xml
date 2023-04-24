@@ -13,7 +13,11 @@
   </property>
   <property>
     <name>yarn.nodemanager.resource.cpu-vcores</name>
-    <value>2</value>
+    <value>{{ worker_cores }}</value>
+  </property>
+  <property>
+    <name>yarn.app.mapreduce.am.resource.memory-mb</name>
+    <value>128</value>
   </property>
   <property>
     <name>yarn.nodemanager.local-dirs</name>
@@ -21,6 +25,6 @@
   </property>
   <property>
     <name>yarn.scheduler.minimum-allocation-mb</name>
-    <value>256</value>
+    <value>64</value>
   </property>
 </configuration>

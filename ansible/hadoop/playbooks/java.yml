@@ -1,7 +1,7 @@
 ---
-- hosts:
+- hosts: cluster
   become: yes
 
   tasks:
     - name: Install JDK 11
-      package:
+      package: name=openjdk-11-jdk state=latest

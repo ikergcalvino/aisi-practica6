@@ -24,12 +24,8 @@
     <value>512</value>
   </property>
   <property>
-    <name>yarn.app.mapreduce.am.resource.mb</name>
-    <value>256</value>
-  </property>
-  <property>
     <name>mapreduce.cluster.local.dir</name>
-    <value>/data/disk0/hadoop/mapred,/data/disk1/hadoop/mapred</value>
+    <value>/data/disk0/{{ hadoop_data_dir }}/mapred,/data/disk1/{{ hadoop_data_dir }}/mapred</value>
   </property>
   <property>
     <name>mapreduce.map.speculative</name>

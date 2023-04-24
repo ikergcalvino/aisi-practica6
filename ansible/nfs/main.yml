@@ -2,6 +2,11 @@
 - hosts: cluster
   become: yes
 
+  tasks:
+  - name: Update Package Cache
+    apt:
+      update_cache: yes
+
 - name: NFS common config
   import_playbook: playbooks/nfs-common.yml
 

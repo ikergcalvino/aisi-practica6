@@ -1,5 +1,13 @@
 #!/bin/bash
 
+if [ "$#" -ne 2 ]; then
+    echo "Sintaxis: $0 NUM_WORKERS WORKER_HOSTNAME"
+    exit -1
+fi
+
+NUM_WORKERS=$1
+WORKER_HOSTNAME=$2
+
 # Format and mount disks to be used with Hadoop HDFS
 if [ ! -d "/data/disk0" ]; then
     mkdir -p /data/disk0 >& /dev/null
@@ -7,8 +15,10 @@ if [ ! -d "/data/disk0" ]; then
     mount /dev/sdb /data/disk0
     chmod 1777 /data/disk0
 else
-    mount /dev/sdb /data/disk0 >& /dev/null
-    chmod 1777 /data/disk0
+	if ! grep -Fq /dev/sdb /proc/mounts ; then
+	    mount /dev/sdc /data/disk0 >& /dev/null
+	    chmod 1777 /data/disk0
+	fi
 fi
 
 if [ ! -d "/data/disk1" ]; then
@@ -17,8 +27,10 @@ if [ ! -d "/data/disk1" ]; then
     mount /dev/sdc /data/disk1
     chmod 1777 /data/disk1
 else
-    mount /dev/sdc /data/disk1 >& /dev/null
-    chmod 1777 /data/disk1
+	if ! grep -Fq /dev/sdc /proc/mounts ; then
+	    mount /dev/sdc /data/disk1
+	    chmod 1777 /data/disk1
+	fi
 fi
 
 if ! grep -Fq /dev/sdb /etc/fstab ; then
@@ -38,14 +50,23 @@ SSH_PUBLIC_KEY=/vagrant/provisioning/id_rsa.pub
 USER_DIR=/home/vagrant/.ssh
 
 if [[ "$HOSTNAME" == *"-master" ]]; then
+	# Populate workers file
+	WORKERS_FILE=/vagrant/ansible/hadoop/playbooks/templates/workers
+	rm $WORKERS_FILE >& /dev/null
+	for (( i=1; i<=$NUM_WORKERS; i++ )); do
+	    echo "$WORKER_HOSTNAME-$i" >> $WORKERS_FILE
+	done
+
 	mkdir -p /etc/ansible
 	cp /vagrant/ansible.inventory /etc/ansible/hosts
-	cp /vagrant/ansible.cfg /etc/ansible
+	cp /vagrant/provisioning/ansible.cfg /etc/ansible
 	chmod 0644 /etc/ansible/hosts
 	chmod 0644 /etc/ansible/ansible.cfg
 
-	# Create ssh keys
-	echo -e 'y\n' | sudo -u vagrant ssh-keygen -t rsa -f $USER_DIR/id_rsa -q -N ''
+	if [ ! -f $USER_DIR/id_rsa.pub ]; then
+		# Create ssh keys
+		echo -e 'y\n' | sudo -u vagrant ssh-keygen -t rsa -f $USER_DIR/id_rsa -q -N ''
+	fi
 
 	if [ ! -f $USER_DIR/id_rsa.pub ]; then
 		echo "SSH public key could not be created"

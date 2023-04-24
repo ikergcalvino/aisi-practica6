@@ -7,6 +7,7 @@
       - ntp
       - vim
       - nano
+      - curl
       - sshpass
       - unzip
       - python3-apt
@@ -19,3 +20,38 @@
       package:
         name: "{{ list_of_packages }}"
         state: latest
+
+    - name: Set master_hostname variable
+      lineinfile:
+        path: /vagrant/ansible/hadoop/playbooks/vars/main.yml
+        regexp: '^master_hostname:'
+        line: 'master_hostname: {{ master_hostname }}'
+        backrefs: yes
+
+    - name: Set nfs_server variable
+      lineinfile:
+        path: /vagrant/ansible/nfs/playbooks/vars/main.yml
+        regexp: '^nfs_server:'
+        line: 'nfs_server: {{ master_hostname }}'
+        backrefs: yes
+
+    - name: Set cluster_network variable
+      lineinfile:
+        path: /vagrant/ansible/nfs/playbooks/vars/main.yml
+        regexp: '^cluster_network:'
+        line: 'cluster_network: {{ master_ip }}/24'
+        backrefs: yes
+
+    - name: Set worker_cores variable
+      lineinfile:
+        path: /vagrant/ansible/hadoop/playbooks/vars/main.yml
+        regexp: '^worker_cores:'
+        line: 'worker_cores: {{ worker_cores }}'
+        backrefs: yes
+
+    - name: Set num_workers variable
+      lineinfile:
+        path: /vagrant/ansible/hadoop/playbooks/vars/main.yml
+        regexp: '^num_workers:'
+        line: 'num_workers: {{ num_workers }}'
+        backrefs: yes

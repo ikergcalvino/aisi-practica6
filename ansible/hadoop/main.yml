@@ -1,7 +1,12 @@
 ---
 - hosts: cluster
   become: yes
-        
+
+  tasks:
+  - name: Update Package Cache
+    apt:
+      update_cache: yes
+
 - name: Java installation
   import_playbook: playbooks/java.yml
 
