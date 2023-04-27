@@ -40,8 +40,8 @@ module VBoxUtils
     end
 
     if vboxmanage_path == nil
-	Warning.warn("VBoxManage not found. Check your VirtualBox installation\n")
-	return
+      Warning.warn("VBoxManage not found. Check your VirtualBox installation\n")
+      return
     end
 
     s = Vagrant::Util::Subprocess.execute(vboxmanage_path, '--version')
@@ -49,9 +49,9 @@ module VBoxUtils
     clean_version = /[0-9]+\.[0-9]+\.[0-9]+/.match(version)
 
     if Gem::Version.new(clean_version) < min_vbox_version
-	puts "VBoxManage path: #{vboxmanage_path}"
-	puts "VirtualBox version: #{clean_version} (#{version})"
-	abort "Please upgrade to Virtualbox >= #{min_vbox_version}"
+      puts "VBoxManage path: #{vboxmanage_path}"
+      puts "VirtualBox version: #{clean_version} (#{version})"
+      abort "Please upgrade to Virtualbox >= #{min_vbox_version}"
     end
   end
 end

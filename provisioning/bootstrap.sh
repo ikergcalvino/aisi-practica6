@@ -15,10 +15,10 @@ if [ ! -d "/data/disk0" ]; then
     mount /dev/sdb /data/disk0
     chmod 1777 /data/disk0
 else
-	if ! grep -Fq /dev/sdb /proc/mounts ; then
-	    mount /dev/sdc /data/disk0 >& /dev/null
-	    chmod 1777 /data/disk0
-	fi
+    if ! grep -Fq /dev/sdb /proc/mounts ; then
+        mount /dev/sdc /data/disk0 >& /dev/null
+        chmod 1777 /data/disk0
+    fi
 fi
 
 if [ ! -d "/data/disk1" ]; then
@@ -27,10 +27,10 @@ if [ ! -d "/data/disk1" ]; then
     mount /dev/sdc /data/disk1
     chmod 1777 /data/disk1
 else
-	if ! grep -Fq /dev/sdc /proc/mounts ; then
-	    mount /dev/sdc /data/disk1
-	    chmod 1777 /data/disk1
-	fi
+    if ! grep -Fq /dev/sdc /proc/mounts ; then
+        mount /dev/sdc /data/disk1
+        chmod 1777 /data/disk1
+    fi
 fi
 
 if ! grep -Fq /dev/sdb /etc/fstab ; then
@@ -50,36 +50,36 @@ SSH_PUBLIC_KEY=/vagrant/provisioning/id_rsa.pub
 USER_DIR=/home/vagrant/.ssh
 
 if [[ "$HOSTNAME" == *"-master" ]]; then
-	# Populate workers file
-	WORKERS_FILE=/vagrant/ansible/hadoop/playbooks/templates/workers
-	rm $WORKERS_FILE >& /dev/null
-	for (( i=1; i<=$NUM_WORKERS; i++ )); do
-	    echo "$WORKER_HOSTNAME-$i" >> $WORKERS_FILE
-	done
+    # Populate workers file
+    WORKERS_FILE=/vagrant/ansible/hadoop/playbooks/templates/workers
+    rm $WORKERS_FILE >& /dev/null
+    for (( i=1; i<=$NUM_WORKERS; i++ )); do
+        echo "$WORKER_HOSTNAME-$i" >> $WORKERS_FILE
+    done
 
-	mkdir -p /etc/ansible
-	cp /vagrant/ansible.inventory /etc/ansible/hosts
-	cp /vagrant/provisioning/ansible.cfg /etc/ansible
-	chmod 0644 /etc/ansible/hosts
-	chmod 0644 /etc/ansible/ansible.cfg
+    mkdir -p /etc/ansible
+    cp /vagrant/ansible.inventory /etc/ansible/hosts
+    cp /vagrant/provisioning/ansible.cfg /etc/ansible
+    chmod 0644 /etc/ansible/hosts
+    chmod 0644 /etc/ansible/ansible.cfg
 
-	if [ ! -f $USER_DIR/id_rsa.pub ]; then
-		# Create ssh keys
-		echo -e 'y\n' | sudo -u vagrant ssh-keygen -t rsa -f $USER_DIR/id_rsa -q -N ''
-	fi
+    if [ ! -f $USER_DIR/id_rsa.pub ]; then
+        # Create ssh keys
+        echo -e 'y\n' | sudo -u vagrant ssh-keygen -t rsa -f $USER_DIR/id_rsa -q -N ''
+    fi
 
-	if [ ! -f $USER_DIR/id_rsa.pub ]; then
-		echo "SSH public key could not be created"
-		exit -1
-	fi
+    if [ ! -f $USER_DIR/id_rsa.pub ]; then
+        echo "SSH public key could not be created"
+        exit -1
+    fi
 
-	chown vagrant:vagrant $USER_DIR/id_rsa*
-	cp $USER_DIR/id_rsa.pub /vagrant/provisioning
+    chown vagrant:vagrant $USER_DIR/id_rsa*
+    cp $USER_DIR/id_rsa.pub /vagrant/provisioning
 fi
 
 if [ ! -f $SSH_PUBLIC_KEY ]; then
-	echo "SSH public key does not exist"
-	exit -1
+    echo "SSH public key does not exist"
+    exit -1
 fi
 
 sed -i "/-aisi/d" $USER_DIR/authorized_keys >& /dev/null
