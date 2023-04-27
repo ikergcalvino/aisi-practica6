@@ -1,5 +1,5 @@
 ---
-- hosts: xxx
+- hosts: masters
   become: yes
 
   vars_files:
@@ -8,7 +8,7 @@
   vars:
     list_of_packages:
       - nfs-kernel-server
-        
+
   tasks:
     - name: Install NFS server packages
       package:
@@ -20,11 +20,10 @@
   
     - name: Copy exports.j2 template to /etc/exports
       template:
-        src: 
-        dest: 
-      notify:
+        src: templates/exports.j2
+        dest: /etc/exports
+      notify: Restart NFS server
 
-        
   handlers:
     - name: Restart NFS server
       service: name=nfs-kernel-server state=restarted

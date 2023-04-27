@@ -1,5 +1,5 @@
 ---
-- hosts: xxx
+- hosts: cluster
   become: yes
 
   vars_files:
@@ -17,8 +17,8 @@
 
     - name: Create NFS directory
       file:
-        path:
-        state: 
-        owner: 
-        group: 
-        mode:
+        path: "{{ nfs_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '1777'

@@ -1,15 +1,15 @@
 ---
-- hosts: xxx
+- hosts: workers
   become: yes
 
   vars_files:
     - vars/main.yml
 
-  tasks: 
+  tasks:
     - name: Mount NFS share
       mount:
-        fstype:
-        path:
-        src:
-        opts:
-        state:
+        fstype: nfs
+        path: "{{ nfs_dir }}"
+        src: "{{ nfs_server }}:{{ nfs_dir }}"
+        opts: rw,sync
+        state: mounted

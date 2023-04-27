@@ -1,5 +1,5 @@
 --- 
-- hosts: xxx
+- hosts: masters
   become: yes
 
   vars_files:
@@ -15,28 +15,28 @@
 
     - name: Download Hadoop package
       get_url:
-        url: 
-        dest: "xxx/hadoop.tar.gz"
-        owner:
-        group:
+        url: "{{ hadoop_url }}"
+        dest: "{{ download_dir }}/hadoop.tar.gz"
+        owner: hadoop
+        group: hadoop
         force: false
         checksum: md5:ae2caf4e19e215a50f13aa0b865c5079
 
     - name: Untar Hadoop package
       unarchive:
-        src:
-        dest:
+        src: "{{ download_dir }}/hadoop.tar.gz"
+        dest: "{{ hadoop_dir }}"
         creates: "{{ hadoop_dir }}/hadoop-{{ hadoop_version }}"
-        owner:
-        group:
+        owner: hadoop
+        group: hadoop
         mode: "0755"
 
     - name: Copy Hadoop configuration using loop
       template:
-        src:
-        dest:
-        owner:
-        group:
+        src: "{{ item }}"
+        dest: "{{ hadoop_conf_dir }}/{{ item }}"
+        owner: hadoop
+        group: hadoop
       loop:
         - core-site.xml
         - hdfs-site.xml
@@ -61,4 +61,3 @@
           export YARN_RESOURCEMANAGER_OPTS="-Xmx512m $YARN_RESOURCEMANAGER_OPTS"
           export YARN_NODEMANAGER_OPTS="-Xmx512m $YARN_NODEMANAGER_OPTS"
         backup: yes
-

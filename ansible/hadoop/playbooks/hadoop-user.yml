@@ -1,5 +1,5 @@
 --- 
-- hosts: xxx
+- hosts: cluster
   become: yes
 
   vars_files:
@@ -11,15 +11,15 @@
 
     - name: Add user "hadoop"
       user:
-        name: 
-        group: 
-        home:
-        createhome:
-        password:
-        shell:
-        generate_ssh_key:
-        ssh_key_bits:
-        ssh_key_type:
+        name: hadoop
+        group: hadoop
+        home: /home/hadoop
+        createhome: yes
+        password: "{{ hadoop_user_passwd }}"
+        shell: /bin/bash
+        generate_ssh_key: yes
+        ssh_key_bits: 2048
+        ssh_key_type: rsa
         force: yes
 
     - name: Add env vars to .profile
