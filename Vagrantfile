@@ -52,13 +52,18 @@ Vagrant.configure("2") do |config|
         prov.memory = MASTER_MEM
 	prov.gui = false
 
+	# Add storage SAS controller only when the VM is provisioned for the first time
+	unless File.exist?(".vagrant/machines/master/virtualbox/action_provision")
+		prov.customize ["storagectl", :id, "--name", "SAS Controller", "--add", "sas", "--portcount", 2]
+	end
+
 	# Add disks
         for i in 0..1 do
             disk = "./disks/#{master.vm.hostname}-disk#{i}.vdi"
             unless File.exist?(disk)
                 prov.customize ["createmedium", "disk", "--filename", disk, "--format", "VDI", "--size", 10 * 1024]
             end
-	    prov.customize ["storageattach", :id, "--storagectl", "SATA Controller", "--port", i + 1, "--device", 0, "--type", "hdd", "--medium", disk]
+	    prov.customize ["storageattach", :id, "--storagectl", "SAS Controller", "--port", i, "--device", 0, "--type", "hdd", "--medium", disk]
         end
     end
 
@@ -90,13 +95,18 @@ Vagrant.configure("2") do |config|
             prov.memory = WORKER_MEM
 	    prov.gui = false
 
+	    # Add storage SAS controller only when the VM is provisioned for the first time
+	    unless File.exist?(".vagrant/machines/worker-#{i}/virtualbox/action_provision")
+		prov.customize ["storagectl", :id, "--name", "SAS Controller", "--add", "sas", "--portcount", 2]
+	    end
+
 	    # Add disks
             for j in 0..1 do
                 disk = "./disks/#{worker.vm.hostname}-disk#{j}.vdi"
                 unless File.exist?(disk)
                     prov.customize ["createmedium", "disk", "--filename", disk, "--format", "VDI", "--size", 10 * 1024]
                 end
-		prov.customize ["storageattach", :id, "--storagectl", "SATA Controller", "--port", j + 1, "--device", 0, "--type", "hdd", "--medium", disk]
+		prov.customize ["storageattach", :id, "--storagectl", "SAS Controller", "--port", j, "--device", 0, "--type", "hdd", "--medium", disk]
             end
         end
     end
